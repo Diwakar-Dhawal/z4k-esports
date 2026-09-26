@@ -11,3 +11,4 @@ next-env.d.ts.bak
 npm-debug.log*
 dev-server.log
 supabase/
+.freebuff/

@@ -28,10 +28,18 @@ export function TournamentCard({
   const regOpen = isRegistrationOpen(t);
   const reg = regState(t);
 
+  const scrollHash =
+    status === "completed" ? "#results" : "#registration";
+
   return (
-    <div className="z4k-card flex flex-col overflow-hidden">
+    <div className="group relative z4k-card flex flex-col overflow-hidden">
+      <Link
+        href={`/tournaments/${t.slug}`}
+        aria-label={`Open ${t.name}`}
+        className="absolute inset-0 z-10"
+      />
       <TournamentThumb name={t.name} game={t.game} heroUrl={t.hero_image_url} />
-      <div className="flex flex-1 flex-col gap-3 p-5">
+      <div className="pointer-events-none flex flex-1 flex-col gap-3 p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h3 className="text-lg font-bold text-white">{t.name}</h3>
@@ -74,11 +82,15 @@ export function TournamentCard({
               : status === "ongoing"
                 ? "Event in progress"
                 : "Completed"}
-          </span>          <Link href={`/tournaments/${t.slug}`}>
-          <Button size="sm" variant={status === "completed" ? "secondary" : "primary"}>
-            {status === "completed" ? "View results" : "View & register"}
-          </Button>
-        </Link>
+          </span>
+          <Link
+            href={`/tournaments/${t.slug}${scrollHash}`}
+            className="pointer-events-auto relative z-20"
+          >
+            <Button size="sm" variant={status === "completed" ? "secondary" : "primary"}>
+              {status === "completed" ? "Results" : "Register"}
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

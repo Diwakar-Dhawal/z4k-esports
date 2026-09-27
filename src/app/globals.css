@@ -16,6 +16,9 @@
 
 html {
   color-scheme: dark;
+  /* Fluid root scale: every rem-based text, button, input and card grows
+     proportionally with the viewport — one consistent resizing system. */
+  font-size: clamp(15px, 14.1px + 0.22vw, 17px);
 }
 
 body {
@@ -23,6 +26,27 @@ body {
   color: var(--foreground);
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
+  /* Long words/emails never blow out their container */
+  overflow-wrap: break-word;
+}
+
+/* --------------------- Fluid display-type scale ----------------------
+   One scale for every page (public + admin): headings resize smoothly
+   with the viewport instead of jumping at breakpoints. Specificity of
+   h1[class] beats single-class utilities, so this wins over text-3xl
+   etc. without !important. */
+h1[class] {
+  font-size: clamp(1.7rem, 1.25rem + 1.7vw, 2.6rem);
+  line-height: 1.12;
+}
+h2[class] {
+  font-size: clamp(1.25rem, 1rem + 0.9vw, 1.8rem);
+  line-height: 1.2;
+}
+h3[class*="text-lg"],
+h3[class*="text-xl"] {
+  font-size: clamp(1rem, 0.94rem + 0.3vw, 1.25rem);
+  line-height: 1.3;
 }
 
 .z4k-container {
@@ -87,11 +111,6 @@ body {
 @media (max-width: 640px) {
   .z4k-container {
     padding-inline: 0.875rem;
-  }
-  /* Section titles tighter */
-  h2.text-2xl,
-  h2.sm\:text-3xl {
-    font-size: 1.45rem;
   }
   /* Buttons and inputs get taller touch targets */
   .z4k-input {

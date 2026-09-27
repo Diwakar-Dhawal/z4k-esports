@@ -113,12 +113,15 @@ export function TournamentThumb({
   heroUrl,
   className,
   showText = true,
+  fill = false,
 }: {
   name: string;
   game?: string;
   heroUrl?: string | null;
   className?: string;
   showText?: boolean;
+  /** Fill the parent box instead of imposing its own 16:9 aspect (hero banners). */
+  fill?: boolean;
 }) {
   if (heroUrl) {
     return (
@@ -126,7 +129,11 @@ export function TournamentThumb({
       <img
         src={heroUrl}
         alt={name}
-        className={`aspect-video w-full rounded-t-xl border-b border-zinc-800 object-cover ${className ?? ""}`}
+        className={
+          fill
+            ? `h-full w-full object-cover ${className ?? ""}`
+            : `aspect-video w-full rounded-t-xl border-b border-zinc-800 object-cover ${className ?? ""}`
+        }
       />
     );
   }
@@ -134,19 +141,23 @@ export function TournamentThumb({
   const seed = name + (game ?? "");
   const hue = hueFor(seed);
   const gid = `tt-${hash(seed)}`;
-  const gameLabel = (game ?? "ESPORTS")
-    .replace(/\(.*?\)/g, "")
-    .trim()
-    .toUpperCase();
-  const gameTag = gameLabel.length > 14 ? gameLabel.slice(0, 12) + "…" : gameLabel;
-  const title = name.length > 34 ? name.slice(0, 32) + "…" : name;
+  const gameLabel = (game ?? "ESPORTS").replace(/\(.*?\)/g, "").trim().toUpperCase();
 
-  return (
+  // Fill mode centers every motif on the vertical middle band, because the
+  // "slice" crop on wide/tall containers keeps only that band — otherwise
+  // the chip drifts to the top edge on big screens. The chip also moves
+  // inward horizontally: tall-ish containers crop ~12 units off each side,
+  // which clipped the chip at x=10 on phones.
+  const cy = fill ? 90 : 62;
+  const chipTop = fill ? 66 : 24;
+  const chipCx = fill ? 56 : 28;
+
+  const art = (
     <svg
       viewBox="0 0 320 180"
       role="img"
       aria-label={`${name} banner`}
-      className={`aspect-video w-full rounded-t-xl border-b border-zinc-800 ${className ?? ""}`}
+      className="h-full w-full"
       preserveAspectRatio="xMidYMid slice"
     >
       <defs>
@@ -173,25 +184,25 @@ export function TournamentThumb({
         strokeWidth="3"
         strokeLinecap="round"
       >
-        <circle cx="256" cy="62" r="26" strokeOpacity="0.5" />
-        <circle cx="256" cy="62" r="4" fill={`hsl(${hue} 85% 62%)`} stroke="none" />
-        <line x1="256" y1="24" x2="256" y2="38" />
-        <line x1="256" y1="86" x2="256" y2="100" />
-        <line x1="218" y1="62" x2="232" y2="62" />
-        <line x1="280" y1="62" x2="294" y2="62" />
+        <circle cx="256" cy={cy} r="26" strokeOpacity="0.5" />
+        <circle cx="256" cy={cy} r="4" fill={`hsl(${hue} 85% 62%)`} stroke="none" />
+        <line x1="256" y1={cy - 38} x2="256" y2={cy - 24} />
+        <line x1="256" y1={cy + 24} x2="256" y2={cy + 38} />
+        <line x1="218" y1={cy} x2="232" y2={cy} />
+        <line x1="280" y1={cy} x2="294" y2={cy} />
       </g>
 
       {/* hex chip */}
       <polygon
-        points="28,24 46,34 46,54 28,64 10,54 10,34"
+        points={`${chipCx},${chipTop} ${chipCx + 18},${chipTop + 10} ${chipCx + 18},${chipTop + 30} ${chipCx},${chipTop + 40} ${chipCx - 18},${chipTop + 30} ${chipCx - 18},${chipTop + 10}`}
         fill={`hsl(${hue} 80% 55%)`}
         fillOpacity="0.2"
         stroke={`hsl(${hue} 85% 62%)`}
         strokeWidth="1.5"
       />
       <text
-        x="28"
-        y="49"
+        x={chipCx}
+        y={chipTop + 25}
         textAnchor="middle"
         fontFamily="ui-sans-serif, system-ui, sans-serif"
         fontSize="13"
@@ -200,33 +211,28 @@ export function TournamentThumb({
       >
         Z4K
       </text>
-
-      {/* title + game tag */}
-      {showText ? (
-        <>
-          <text
-            x="20"
-            y="118"
-            fontFamily="ui-sans-serif, system-ui, sans-serif"
-            fontSize="20"
-            fontWeight="900"
-            fill="#fafafa"
-          >
-            {title.toUpperCase()}
-          </text>
-          <text
-            x="20"
-            y="146"
-            fontFamily="ui-sans-serif, system-ui, sans-serif"
-            fontSize="11"
-            fontWeight="700"
-            letterSpacing="3"
-            fill={`hsl(${hue} 80% 68%)`}
-          >
-            {gameTag}
-          </text>
-        </>
-      ) : null}
     </svg>
+  );
+
+  // Fill mode: purely decorative art (title is overlaid by the page).
+  if (fill) return <div className={`h-full w-full ${className ?? ""}`}>{art}</div>;
+
+  // Card mode: art + HTML text overlay that scales with the viewport.
+  return (
+    <div
+      className={`relative aspect-video w-full overflow-hidden rounded-t-xl border-b border-zinc-800 ${className ?? ""}`}
+    >
+      <div className="absolute inset-0">{art}</div>
+      {showText ? (
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 sm:p-4">
+          <p className="line-clamp-2 text-sm font-black uppercase leading-tight text-white sm:text-base">
+            {name}
+          </p>
+          <p className="mt-1 truncate text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-300 sm:text-[11px]">
+            {gameLabel}
+          </p>
+        </div>
+      ) : null}
+    </div>
   );
 }

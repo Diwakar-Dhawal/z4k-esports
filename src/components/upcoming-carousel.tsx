@@ -23,12 +23,12 @@ export function UpcomingCarousel({
 }) {
   if (items.length === 0) {
     return (
-      <div className="relative overflow-hidden border-b border-zinc-800">
+      <div className="relative h-[220px] overflow-hidden border-b border-zinc-800 sm:h-[280px] md:h-[320px]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={fallbackUrl ?? "/games/tournaments-hero.jpg"}
           alt="Z4K tournaments"
-          className="aspect-[16/9] w-full object-cover sm:aspect-[21/9]"
+          className="h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent" />
         <div className="absolute bottom-0 left-0 p-6 sm:p-10">

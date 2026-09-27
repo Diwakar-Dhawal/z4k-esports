@@ -140,8 +140,20 @@ export function Badge({
 
 /* ---------------------------------- Card ----------------------------------- */
 
-export function Card({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn("z4k-card p-4", className)}>{children}</div>;
+export function Card({
+  children,
+  className,
+  id,
+}: {
+  children: ReactNode;
+  className?: string;
+  id?: string;
+}) {
+  return (
+    <div id={id} className={cn("z4k-card p-4", className)}>
+      {children}
+    </div>
+  );
 }
 
 export function SectionTitle({ children, sub }: { children: ReactNode; sub?: string }) {

@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "./globals.css";
 import { getProfile } from "@/lib/supabase/profile";
 import { SiteSidebar } from "@/components/site-sidebar";
 import { SiteFooter } from "@/components/site-footer";
+import { HashScroll } from "@/components/hash-scroll";
+import { NavLoader } from "@/components/nav-loader";
 
 export const metadata: Metadata = {
   title: {
@@ -23,6 +26,10 @@ export default async function RootLayout({
     <html lang="en">
       <body className="min-h-screen antialiased">
         <SiteSidebar profile={profile} />
+        <Suspense fallback={null}>
+          <HashScroll />
+          <NavLoader />
+        </Suspense>
         <div className="md:pl-60">
           <main className="min-h-[calc(100vh-3.5rem)]">{children}</main>
           <SiteFooter />

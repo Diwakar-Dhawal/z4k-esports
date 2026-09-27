@@ -19,12 +19,12 @@ export function UpcomingCarouselClient({ items }: { items: UpcomingItem[] }) {
   if (items.length === 1) {
     const it = items[0];
     return (
-      <Link href={`/tournaments/${it.slug}`} className="relative block overflow-hidden border-b border-zinc-800">
-        <TournamentThumb name={it.name} game={it.game} heroUrl={it.heroUrl} showText={false} />
+      <Link href={`/tournaments/${it.slug}`} className="relative block h-[220px] overflow-hidden border-b border-zinc-800 sm:h-[280px] md:h-[320px]">
+        <TournamentThumb name={it.name} game={it.game} heroUrl={it.heroUrl} showText={false} fill />
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/30 to-transparent" />
         <div className="absolute bottom-0 left-0 p-5 sm:p-10">
           <p className="text-xs font-bold uppercase tracking-[0.3em] text-red-400">{it.label}</p>
-          <h2 className="mt-1 text-xl font-black uppercase tracking-tight text-white sm:text-4xl">
+          <h2 className="mt-1 text-xl font-black uppercase tracking-tight text-white sm:text-3xl">
             {it.name}
           </h2>
           <p className="mt-2 text-sm text-zinc-300">{it.game}</p>
@@ -34,24 +34,24 @@ export function UpcomingCarouselClient({ items }: { items: UpcomingItem[] }) {
   }
 
   return (
-    <div className="relative overflow-hidden border-b border-zinc-800">
+    <div className="relative h-[220px] overflow-hidden border-b border-zinc-800 sm:h-[280px] md:h-[320px]">
       <div
-        className="flex transition-transform duration-700 ease-out"
+        className="flex h-full transition-transform duration-700 ease-out"
         style={{ transform: `translateX(-${index * 100}%)` }}
       >
         {items.map((it) => (
           <Link
             key={it.slug}
             href={`/tournaments/${it.slug}`}
-            className="relative block min-w-full"
+            className="relative block h-full min-w-full"
           >
-            <TournamentThumb name={it.name} game={it.game} heroUrl={it.heroUrl} showText={false} />
+            <TournamentThumb name={it.name} game={it.game} heroUrl={it.heroUrl} showText={false} fill />
             <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent" />
             <div className="absolute bottom-0 left-0 p-5 sm:p-10">
               <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-red-400 sm:text-xs sm:tracking-[0.3em]">
                 {it.label}
               </p>
-              <h2 className="mt-1 text-xl font-black uppercase tracking-tight text-white sm:text-4xl">
+              <h2 className="mt-1 text-xl font-black uppercase tracking-tight text-white sm:text-3xl">
                 {it.name}
               </h2>
               <p className="mt-2 text-sm text-zinc-300">{it.game}</p>

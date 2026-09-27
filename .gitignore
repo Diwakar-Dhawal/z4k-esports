@@ -10,5 +10,7 @@ next-env.d.ts.bak
 .DS_Store
 npm-debug.log*
 dev-server.log
-supabase/
+dev.log
+prod-server.log
+
 .freebuff/

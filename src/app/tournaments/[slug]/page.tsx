@@ -118,9 +118,9 @@ export default async function TournamentDetailPage({
 
   return (
     <div className="z4k-container py-10">
-      {/* Banner */}
-      <div className="mb-6 overflow-hidden rounded-xl border border-zinc-800">
-        <TournamentThumb name={t.name} game={t.game} heroUrl={t.hero_image_url} />
+      {/* Banner — capped height so it never dwarfs the page */}
+      <div className="mb-6 h-[220px] overflow-hidden rounded-xl border border-zinc-800 sm:h-[280px] md:h-[340px]">
+        <TournamentThumb name={t.name} game={t.game} heroUrl={t.hero_image_url} fill />
       </div>
 
       {/* Header */}
@@ -138,7 +138,7 @@ export default async function TournamentDetailPage({
             <p className="mt-2 max-w-2xl text-sm text-zinc-400">{t.description}</p>
           ) : null}
         </div>
-        <div className="flex flex-col items-end gap-2 text-sm text-zinc-400">
+        <div className="flex flex-col gap-2 text-sm text-zinc-400 sm:items-end">
           <span>🗓 {fmtDateTime(t.event_starts_at)}</span>
           <span>
             👥 {t.team_size}v{t.team_size}
@@ -191,7 +191,7 @@ export default async function TournamentDetailPage({
 
           {/* Results */}
           {results.length > 0 ? (
-            <div>
+            <div id="results" className="scroll-mt-16">
               <SectionTitle>Results</SectionTitle>
               <div className="space-y-2">
                 {results.map((r) => (
@@ -297,7 +297,7 @@ export default async function TournamentDetailPage({
         {/* Side column */}
         <div className="space-y-6">
           {/* Registration box */}
-          <Card className="space-y-4">
+          <Card className="scroll-mt-16 space-y-4" id="registration">
             <h2 className="text-sm font-bold uppercase tracking-widest text-white">
               Registration
             </h2>

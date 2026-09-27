@@ -25,7 +25,9 @@ export function SiteSidebar({ profile }: { profile: Profile | null }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
-  // Close the drawer whenever the route changes
+  // Close the drawer whenever the route changes.
+  // Click-feedback spinner lives globally in <NavLoader/> so it covers
+  // sidebar AND content links (tournament cards etc.).
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
@@ -48,6 +50,7 @@ export function SiteSidebar({ profile }: { profile: Profile | null }) {
           <Link
             key={item.href}
             href={item.href}
+            onClick={() => setOpen(false)}
             className={cn(
               "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors",
               active
@@ -63,32 +66,34 @@ export function SiteSidebar({ profile }: { profile: Profile | null }) {
     </nav>
   );
 
-  const userBlock = (
+  const userBlock = profile ? (
     <div className="border-t border-zinc-800 p-3">
-      {profile ? (
-        <div className="space-y-2">
-          <div className="flex items-center gap-3 rounded-lg bg-zinc-900/70 p-2">
-            <MemberEmblem
-              name={profile.full_name ?? profile.email}
-              photoUrl={profile.avatar_url}
-              size={36}
-            />
-            <div className="min-w-0">
-              <p className="truncate text-sm font-bold text-white">
-                {profile.full_name ?? "Player"}
-              </p>
-              <p className="truncate text-xs capitalize text-red-400">{profile.role}</p>
-            </div>
+      <div className="space-y-2">
+        <div className="flex items-center gap-3 rounded-lg bg-zinc-900/70 p-2">
+          <MemberEmblem
+            name={profile.full_name ?? profile.email}
+            photoUrl={profile.avatar_url}
+            size={36}
+          />
+          <div className="min-w-0">
+            <p className="truncate text-sm font-bold text-white">
+              {profile.full_name ?? "Player"}
+            </p>
+            <p className="truncate text-xs capitalize text-red-400">{profile.role}</p>
           </div>
-          <Button size="sm" variant="ghost" onClick={signOut} className="w-full">
-            Sign out
-          </Button>
         </div>
-      ) : (
-        <Link href="/login">
-          <Button size="sm" className="w-full">Sign in</Button>
-        </Link>
-      )}
+        <Button size="sm" variant="ghost" onClick={signOut} className="w-full">
+          Sign out
+        </Button>
+      </div>
+    </div>
+  ) : null;
+
+  const signInTop = profile ? null : (
+    <div className="px-3 pb-1 pt-3">
+      <Link href="/login">
+        <Button size="sm" className="w-full">Sign in</Button>
+      </Link>
     </div>
   );
 
@@ -110,7 +115,16 @@ export function SiteSidebar({ profile }: { profile: Profile | null }) {
         <span className="text-[11px] font-black uppercase tracking-[0.3em] text-zinc-400">
           Z4K ESPORTS
         </span>
-        <button
+        <div className="flex items-center gap-2">
+          {!profile ? (
+            <Link
+              href="/login"
+              className="rounded-md bg-red-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-red-500"
+            >
+              Sign in
+            </Link>
+          ) : null}
+          <button
           onClick={() => setOpen(true)}
           aria-label="Open menu"
           className="rounded-md p-2.5 text-zinc-300 hover:bg-zinc-800"
@@ -118,7 +132,8 @@ export function SiteSidebar({ profile }: { profile: Profile | null }) {
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
           </svg>
-        </button>
+          </button>
+        </div>
       </div>
 
       {/* Mobile drawer */}
@@ -142,6 +157,7 @@ export function SiteSidebar({ profile }: { profile: Profile | null }) {
           )}
         >
           {brand}
+          {signInTop}
           {navList}
           {userBlock}
         </aside>
@@ -150,6 +166,7 @@ export function SiteSidebar({ profile }: { profile: Profile | null }) {
       {/* Desktop rail */}
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-zinc-800 bg-zinc-950 md:flex">
         {brand}
+        {signInTop}
         {navList}
         {userBlock}
       </aside>

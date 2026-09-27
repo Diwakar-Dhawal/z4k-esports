@@ -13,8 +13,6 @@ function LoginInner() {
   const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [msg, setMsg] = useState<string | null>(null);
 
   useEffect(() => {
     // If already signed in, skip the form
@@ -24,34 +22,9 @@ function LoginInner() {
     });
   }, [router, next]);
 
-  async function signUpWithEmail() {
-    setLoading(true);
-    setError(null);
-    setMsg(null);
-    const supabase = createClient();
-    const { data, error } = await supabase.auth.signUp({
-      email: email.trim(),
-      password,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}` },
-    });
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-      return;
-    }
-    if (data.session) {
-      router.replace(next);
-      router.refresh();
-    } else {
-      setMsg("Check your inbox to confirm the email, then sign in.");
-      setLoading(false);
-    }
-  }
-
   async function signInWithEmail() {
     setLoading(true);
     setError(null);
-    setMsg(null);
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithPassword({
       email: email.trim(),
@@ -102,7 +75,8 @@ function LoginInner() {
         </Button>
 
         <div className="flex items-center gap-3 text-xs uppercase tracking-widest text-zinc-600">
-          <span className="h-px flex-1 bg-zinc-800" /> or email <span className="h-px flex-1 bg-zinc-800" />
+          <span className="h-px flex-1 bg-zinc-800" /> staff sign-in{" "}
+          <span className="h-px flex-1 bg-zinc-800" />
         </div>
 
         <div className="space-y-3 text-left">
@@ -114,6 +88,7 @@ function LoginInner() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
+              autoComplete="email"
             />
           </div>
           <div>
@@ -124,38 +99,26 @@ function LoginInner() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
+              autoComplete="current-password"
               onKeyDown={(e) => {
-                if (e.key === "Enter" && email && password) mode === "signin" ? signInWithEmail() : signUpWithEmail();
+                if (e.key === "Enter" && email && password) signInWithEmail();
               }}
             />
           </div>
-          <div className="flex gap-2">
-            {mode === "signin" ? (
-              <>
-                <Button onClick={signInWithEmail} disabled={loading || !email || !password} className="flex-1">
-                  {loading ? <Spinner /> : null} Sign in
-                </Button>
-                <Button variant="ghost" onClick={() => setMode("signup")} disabled={loading}>
-                  Create account
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button onClick={signUpWithEmail} disabled={loading || !email || !password} className="flex-1">
-                  {loading ? <Spinner /> : null} Create account
-                </Button>
-                <Button variant="ghost" onClick={() => setMode("signin")} disabled={loading}>
-                  Back to sign in
-                </Button>
-              </>
-            )}
-          </div>
+          <Button
+            onClick={signInWithEmail}
+            disabled={loading || !email || !password}
+            variant="secondary"
+            className="w-full"
+          >
+            {loading ? <Spinner /> : null} Sign in with email
+          </Button>
         </div>
 
-        {msg ? <div className="z4k-success text-left">{msg}</div> : null}
         {error ? <div className="z4k-error text-left">{error}</div> : null}
         <p className="text-xs text-zinc-500">
-          New here? Signing in creates your player profile instantly.
+          New here? Signing in with Google creates your player profile instantly. No
+          account needed to register for tournaments.
         </p>
       </Card>
     </div>
